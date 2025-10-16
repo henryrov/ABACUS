@@ -1,0 +1,3 @@
+[submodule "abacus_fw/sprites/QSPRITELY"]
+	path = abacus_fw/sprites/QSPRITELY
+	url = git@github.com:henryrov/QSPRITELY.git

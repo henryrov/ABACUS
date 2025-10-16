@@ -1,0 +1,5 @@
+*.elf
+*.o
+*~
+sprites.c
+sprites.h
