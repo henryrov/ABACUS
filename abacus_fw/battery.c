@@ -5,7 +5,7 @@
 #define ADC_MAX_VAL 4095
 #define BATTERY_MIN_VOLTAGE 3.3
 #define BATTERY_MAX_VOLTAGE 4.2
-#define BATTERY_THRESHOLD(v) (ADC_MAX_VAL * 0.5 / 3.3                   \
+#define BATTERY_THRESHOLD(v) (ADC_MAX_VAL * 0.5 / 3                     \
                               * (BATTERY_MIN_VOLTAGE +                  \
                                  (v) * (BATTERY_MAX_VOLTAGE - BATTERY_MIN_VOLTAGE)))
 
