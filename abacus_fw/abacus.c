@@ -176,6 +176,16 @@ void tim14_isr()
       return;
     }
 
+  uint16_t adc_vrefint = ADC_DR;
+  ADC_CR |= 1 << 2;
+  WAIT_WITH_TIMEOUT(!(ADC_ISR & (1 << 2)), DEFAULT_TIMEOUT, timeout_error);
+  if (timeout_error)
+    {
+      internal_error = true;
+      TIM14_SR &= ~(1);
+      return;
+    }
+
   uint16_t adc_right = ADC_DR;
   ADC_CR |= 1 << 2;
   WAIT_WITH_TIMEOUT(!(ADC_ISR & (1 << 2)), DEFAULT_TIMEOUT, timeout_error);
@@ -197,7 +207,9 @@ void tim14_isr()
     }
 
   uint16_t adc_bat = ADC_DR;
-  enum sprites_e new_battery_level = get_battery_level(adc_bat);
+  float supply_voltage = 3.0 * VREFINT_3V / adc_vrefint;
+  float battery_voltage = 2 * (supply_voltage * adc_bat) / ADC_MAX_VAL;
+  enum sprites_e new_battery_level = get_battery_level(battery_voltage);
   if (new_battery_level != prev_battery_level)
     {
       ui_state.battery_level = new_battery_level;
@@ -355,18 +367,19 @@ void init()
 
   /* ADC setup - calibration then initialization */
 
+  ADC_SMPR |= 0b111;
+  ADC_CCR |= 1 << 22;
   ADC_CR |= 1 << 28;
   for (int i = 0; i < 100000; i++);
   ADC_CR |= 1 << 31;
   while (ADC_CR & (1 << 31));
   uint8_t calibration_factor = (ADC_DR & (0x7f)) + 1;
 
-  ADC_CHSELR = (1 << 14) | (1 << 13) | (1 << 11);
+  ADC_CHSELR = (1 << 14) | (1 << 13) | (1 << 11) | (1 << 10);
   ADC_CFGR1 = 1 << 16;
   ADC_CR |= 1;
   while (!(ADC_ISR & 1));
   ADC_CALFACT = calibration_factor;
-  ADC_SMPR |= 0b111;
 
   /* GPIO pin setup */
 

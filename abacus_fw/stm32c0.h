@@ -6,6 +6,10 @@
 #define REGISTER_32(ADDRESS) (*((volatile uint32_t *)(ADDRESS)))
 #define REGISTER_16(ADDRESS) (*((volatile uint16_t *)(ADDRESS)))
 
+/* Internal reference measurement during manufactoring */
+
+#define VREFINT_3V REGISTER_16(0x1FFF756A)
+
 /* ADC Registers */
 
 #define ADC_BASE 0x40012400
@@ -16,6 +20,7 @@
 #define ADC_CHSELR REGISTER_32(ADC_BASE + 0x28)
 #define ADC_DR REGISTER_32(ADC_BASE + 0x40)
 #define ADC_CALFACT REGISTER_32(ADC_BASE + 0xB4)
+#define ADC_CCR REGISTER_32(ADC_BASE + 0x308)
 
 /* GPIO Registers */
 
