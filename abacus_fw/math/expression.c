@@ -45,6 +45,11 @@ float parse_item(struct token_s *tokens, uint8_t *index, int8_t *error_index)
           return 0.0;
         }
     }
+  else
+    {
+      *error_index = *index;
+      return 0.0;
+    }
 
   return result;
 }

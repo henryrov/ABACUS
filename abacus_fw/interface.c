@@ -37,11 +37,11 @@ void scale_result(float in,
 
       int8_t pow_10 = 0;
       uint8_t digits_before_decimal;
-      int8_t prefix_pow;
+      int8_t suffix_pow;
 
       if (in >= 1)
         {
-          while ((int)(in / pow(10.0, pow_10)))
+          while (((int)(in / pow(10.0, pow_10))) > 0)
             {
               pow_10++;
             }
@@ -50,7 +50,7 @@ void scale_result(float in,
         }
       else
         {
-          while ((int)(in / pow(10.0, pow_10)) == 0)
+          while (((int)(in / pow(10.0, pow_10))) == 0)
             {
               pow_10--;
             }
@@ -66,10 +66,10 @@ void scale_result(float in,
 
       float rounded_in = round(in * factor_to_integer) / factor_to_integer;
 
-      if (rounded_in >= 1)
+      if (pow_10 >= 0)
         {
           digits_before_decimal = (pow_10 % 3) + 1;
-          prefix_pow = (pow_10 / 3) * 3;
+          suffix_pow = (pow_10 / 3) * 3;
         }
       else
         {
@@ -88,14 +88,17 @@ void scale_result(float in,
               break;
             }
 
-          prefix_pow = pow_10;
-          while ((prefix_pow % 3) != 0)
+          if ((pow_10 % 3) == 0)
             {
-              prefix_pow--;
+              suffix_pow = (pow_10 / 3) * 3;
+            }
+          else
+            {
+              suffix_pow = ((pow_10 / 3) - 1) * 3;
             }
         }
 
-      if (prefix_pow > 9)
+      if (suffix_pow > 9)
         {
           /* For now refuse to return anything this big */
 
@@ -107,7 +110,7 @@ void scale_result(float in,
           *unit_prefix = SPRITE_BLANK;
           return;
         }
-      else if (prefix_pow < -12)
+      else if (suffix_pow < -12)
         {
           /* Also refuse to return anything tiny */
 
@@ -137,7 +140,7 @@ void scale_result(float in,
             }
         }
 
-      switch (prefix_pow)
+      switch (suffix_pow)
         {
         case -12:
           *unit_prefix = SPRITE_LC_P;
@@ -247,6 +250,11 @@ void interface_draw_selection(enum selection_side_e side)
       start_column = 120;
       index = ui_state.right_selection_i;
       break;
+
+    default:
+      /* Invalid input */
+      internal_error = true;
+      return;
     }
 
   display_move(start_column, 4);
