@@ -1,5 +1,5 @@
 CC=arm-none-eabi-gcc
-CFLAGS=--specs=picolibc.specs -mcpu=cortex-m0 -mthumb -lgcc -Wall -Wextra -O1
+CFLAGS=--specs=picolibc.specs -mcpu=cortex-m0 -mthumb -lgcc -Wall -Wextra -O3
 TARGET_FILES=abacus.elf abacus.o sprites/sprites.h sprites/sprites.c sprites/sprites.o math/descent.o math/token.o math/expression.o display.o interface.o
 
 .PHONY=all spritefiles clean

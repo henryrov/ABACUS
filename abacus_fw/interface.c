@@ -253,6 +253,7 @@ void interface_draw_selection(enum selection_side_e side)
 
     default:
       /* Invalid input */
+
       internal_error = true;
       return;
     }

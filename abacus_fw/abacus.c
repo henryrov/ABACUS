@@ -358,7 +358,12 @@ void init()
    * and to allow debugging.
    */
 
-  for (int i = 0; i < 2000000; i++);
+  for (int i = 0; i < 2000000; i++)
+    {
+      /* Mark i as used to stop this from being optimized out */
+
+      __asm__ volatile("" : "+g" (i));
+    }
 
   /* Remap PA12 to PA10 */
 
@@ -405,7 +410,7 @@ void init()
   /* Timer setup */
 
   TIM14_PSC = 11999;
-  TIM14_ARR = 19;
+  TIM14_ARR = 39;
   TIM14_DIER |= 1;
   TIM14_CR1 = 1;
 
